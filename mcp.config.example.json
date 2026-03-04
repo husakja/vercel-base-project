@@ -1,0 +1,39 @@
+{
+  "mcpServers": {
+    "next-devtools": {
+      "command": "npx",
+      "args": ["-y", "next-devtools-mcp@latest"],
+      "env": {
+        "NEXT_TELEMETRY_DISABLED": "${NEXT_TELEMETRY_DISABLED}"
+      }
+    },
+    "vercel": {
+      "command": "npx",
+      "args": ["-y", "@mistertk/vercel-mcp"],
+      "env": {
+        "VERCEL_API_KEY": "${VERCEL_API_KEY}"
+      }
+    },
+    "tailwind": {
+      "command": "npx",
+      "args": ["-y", "@iflow-mcp/coppinaphil-tailwind-mcp-server"]
+    },
+    "docker": {
+      "command": "npx",
+      "args": ["-y", "@hypnosis/docker-mcp-server"],
+      "env": {
+        "DOCKER_MCP_AUTO_DISCOVER": "${DOCKER_MCP_AUTO_DISCOVER}",
+        "DOCKER_MCP_MASK_SECRETS": "${DOCKER_MCP_MASK_SECRETS}",
+        "DOCKER_MCP_PROFILES_FILE": "${DOCKER_MCP_PROFILES_FILE}"
+      }
+    },
+    "postgres": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-postgres",
+        "${MCP_POSTGRES_URL}"
+      ]
+    }
+  }
+}

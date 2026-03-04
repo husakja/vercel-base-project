@@ -52,15 +52,59 @@ Use:
 
 ## MCP Servers
 
-No MCP server configuration is currently present in this repository.
+Recommended MCP servers for this stack:
 
-If MCP is introduced later, document it in this section with:
+- `next-devtools-mcp` (Next.js)
+  - transport: `stdio`
+  - startup command: `npx -y next-devtools-mcp@latest`
+  - scope: Next.js docs lookup, upgrade/codemod workflows, browser automation, and runtime diagnostics from a running Next.js dev server (`/_next/mcp`)
+  - required credentials: none
 
-- server name
-- transport (stdio/http)
-- startup command
-- scope (what tools/resources it exposes)
-- required credentials
+- `@mistertk/vercel-mcp` (Vercel platform)
+  - transport: `stdio`
+  - startup command: `npx -y @mistertk/vercel-mcp`
+  - scope: Vercel projects, deployments, domains, DNS, environment variables, teams, webhooks, and related platform operations
+  - required credentials: `VERCEL_API_KEY` (required), plus optional team/project IDs depending on the operation
+
+- `@iflow-mcp/coppinaphil-tailwind-mcp-server` (Tailwind CSS)
+  - transport: `stdio`
+  - startup command: `npx -y @iflow-mcp/coppinaphil-tailwind-mcp-server`
+  - scope: Tailwind component generation, class validation/optimization, theme/config generation, responsive pattern guidance
+  - required credentials: none
+
+- `@hypnosis/docker-mcp-server` (Docker and Docker Compose)
+  - transport: `stdio`
+  - startup command: `npx -y @hypnosis/docker-mcp-server`
+  - scope: container lifecycle, logs, compose up/down, compose config discovery, health checks, and Docker resource inspection
+  - required credentials: local Docker socket access; optional SSH profile credentials for remote Docker hosts
+
+- `@modelcontextprotocol/server-postgres` (PostgreSQL)
+  - transport: `stdio`
+  - startup command: `npx -y @modelcontextprotocol/server-postgres postgresql://USER:PASSWORD@HOST:5432/DB_NAME`
+  - scope: read-only SQL queries and table/schema introspection resources for PostgreSQL databases
+  - required credentials: PostgreSQL connection string (local Docker Postgres or hosted Neon/Postgres)
+
+Notes:
+- Prefer read-only database MCP usage in shared/production environments.
+- This project uses local Postgres via `docker-compose.yml` and hosted Neon-compatible Postgres in Vercel environments.
+
+Project config:
+- `mcp.config.example.json` contains a ready-to-adapt MCP client config for this stack.
+- Client-specific templates are also provided:
+  - `mcp.codex.example.toml` for Codex (`~/.codex/config.toml`)
+  - `mcp.claude.example.json` for Claude Code project scope (`.mcp.json`)
+  - `mcp.opencode.example.json` for OpenCode (`opencode.json`)
+- Ready-to-use project-scoped configs are included:
+  - `.codex/config.toml` (Codex)
+  - `.mcp.json` (Claude Code)
+  - `opencode.json` (OpenCode)
+- Copy required keys from `.env.example` (or `.env.docker.example`) into your local environment before enabling all servers.
+- Required for full setup: `VERCEL_API_KEY` and `MCP_POSTGRES_URL` (you can reuse `DATABASE_URL` for local/dev).
+
+Quick setup:
+1. Populate MCP env vars in `.env.local` from `.env.example`.
+2. Use the ready project config for your client (`.mcp.json`, `opencode.json`, or `.codex/config.toml`), or copy a client-specific template if you prefer.
+3. Start services as needed (`npm run dev` for Next.js runtime MCP, `npm run docker:up` for local Docker/Postgres).
 
 ## LSP and Tooling Guidance
 

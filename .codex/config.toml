@@ -1,0 +1,33 @@
+# Project-scoped Codex MCP configuration.
+# Uses environment variables only; no secrets are committed.
+
+[mcp_servers.next-devtools]
+command = "npx"
+args = ["-y", "next-devtools-mcp@latest"]
+env_vars = ["NEXT_TELEMETRY_DISABLED"]
+
+[mcp_servers.vercel]
+command = "npx"
+args = ["-y", "@mistertk/vercel-mcp"]
+env_vars = ["VERCEL_API_KEY"]
+
+[mcp_servers.tailwind]
+command = "npx"
+args = ["-y", "@iflow-mcp/coppinaphil-tailwind-mcp-server"]
+
+[mcp_servers.docker]
+command = "npx"
+args = ["-y", "@hypnosis/docker-mcp-server"]
+env_vars = [
+  "DOCKER_MCP_AUTO_DISCOVER",
+  "DOCKER_MCP_MASK_SECRETS",
+  "DOCKER_MCP_PROFILES_FILE"
+]
+
+[mcp_servers.postgres]
+command = "sh"
+args = [
+  "-lc",
+  "npx -y @modelcontextprotocol/server-postgres \"$MCP_POSTGRES_URL\""
+]
+env_vars = ["MCP_POSTGRES_URL"]
