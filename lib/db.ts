@@ -6,15 +6,25 @@ const globalForPrisma = globalThis as unknown as {
 }
 
 function createPrismaClient() {
-  // PrismaNeon accepts a PoolConfig directly (connection string or config object)
-  const adapter = new PrismaNeon({
-    connectionString: process.env.DATABASE_URL,
-  })
+  const log = process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error']
 
-  return new PrismaClient({
-    adapter,
-    log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
-  })
+  const shouldUseNeonAdapter =
+    process.env.DATABASE_URL?.includes('neon.tech') ||
+    process.env.DATABASE_URL?.includes('neon.database.azure.com')
+
+  if (shouldUseNeonAdapter) {
+    // PrismaNeon accepts a PoolConfig directly (connection string or config object)
+    const adapter = new PrismaNeon({
+      connectionString: process.env.DATABASE_URL,
+    })
+
+    return new PrismaClient({
+      adapter,
+      log,
+    })
+  }
+
+  return new PrismaClient({ log })
 }
 
 // Reuse the same PrismaClient instance across hot reloads in development

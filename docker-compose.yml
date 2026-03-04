@@ -1,0 +1,58 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: vercel_dev
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d vercel_dev']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mailhog:
+    image: mailhog/mailhog:v1.0.1
+    restart: unless-stopped
+    ports:
+      - '1025:1025'
+      - '8025:8025'
+
+  prisma-studio:
+    image: node:20-alpine
+    restart: unless-stopped
+    working_dir: /workspace
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/vercel_dev?schema=public
+    command: sh -c "npm ci && npx prisma studio --hostname 0.0.0.0 --port 5555"
+    ports:
+      - '5555:5555'
+    volumes:
+      - .:/workspace
+      - prisma_studio_node_modules:/workspace/node_modules
+
+volumes:
+  postgres_data:
+  redis_data:
+  prisma_studio_node_modules:
